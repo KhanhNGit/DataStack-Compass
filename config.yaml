@@ -1,0 +1,94 @@
+# config.yaml
+# Cấu hình danh sách 31 công cụ Big Data phục vụ hệ thống DataStack Compass
+
+sources:
+  # ==========================================
+  # NHÓM 1: CHUẨN GITHUB RELEASES (19 CÔNG CỤ)
+  # (Tương thích: GenericGitHubAdapter)
+  # ==========================================
+  
+  # --- Phân hệ Platform Operation ---
+  - name: keycloak
+    url: https://github.com/keycloak/keycloak
+  - name: hashicorp_vault
+    url: https://github.com/hashicorp/vault
+  - name: rancher
+    url: https://github.com/rancher/rancher
+  - name: prometheus
+    url: https://github.com/prometheus/prometheus
+  - name: grafana
+    url: https://github.com/grafana/grafana
+  - name: kubernetes
+    url: https://github.com/kubernetes/kubernetes
+
+  # --- Phân hệ Data Governance ---
+  - name: datahub
+    url: https://github.com/datahub-project/datahub
+  - name: great_expectations
+    url: https://github.com/great-expectations/great_expectations
+
+  # --- Phân hệ Data Consumption ---
+  - name: apache_superset
+    url: https://github.com/apache/superset
+  - name: metabase
+    url: https://github.com/metabase/metabase
+
+  # --- Phân hệ Data Storage ---
+  - name: starrocks   # Thuộc cả phân hệ Data Processing
+    url: https://github.com/StarRocks/starrocks
+  - name: apache_iceberg
+    url: https://github.com/apache/iceberg
+  - name: apache_hudi
+    url: https://github.com/apache/hudi
+  - name: delta_lake
+    url: https://github.com/delta-io/delta
+  - name: minio
+    url: https://github.com/minio/minio
+
+  # --- Phân hệ Data Processing ---
+  - name: opensearch
+    url: https://github.com/opensearch-project/OpenSearch
+  - name: trino
+    url: https://github.com/trinodb/trino
+  - name: apache_airflow
+    url: https://github.com/apache/airflow
+
+
+  # ==========================================
+  # NHÓM 2: CHUẨN APACHE JIRA (12 CÔNG CỤ)
+  # (Tương thích: ApacheJiraAdapter)
+  # ==========================================
+
+  # --- Phân hệ Data Governance ---
+  - name: hive_metastore
+    url: JIRA_HIVE
+  - name: apache_ranger
+    url: JIRA_RANGER
+
+  # --- Phân hệ Data Consumption ---
+  - name: apache_zeppelin
+    url: JIRA_ZEPPELIN
+
+  # --- Phân hệ Data Storage ---
+  - name: apache_hbase
+    url: JIRA_HBASE
+  - name: hdfs
+    url: JIRA_HADOOP # HDFS dùng chung project key HADOOP trên Jira
+
+  # --- Phân hệ Data Ingestion ---
+  - name: apache_nifi
+    url: JIRA_NIFI
+  - name: apache_kafka
+    url: JIRA_KAFKA
+  - name: kafka_connect
+    url: JIRA_KAFKA # Nằm chung luồng Issue tracking với Kafka
+
+  # --- Phân hệ Data Processing ---
+  - name: apache_solr
+    url: JIRA_SOLR
+  - name: apache_spark
+    url: JIRA_SPARK
+  - name: apache_flink
+    url: JIRA_FLINK
+  - name: apache_hop
+    url: JIRA_HOP

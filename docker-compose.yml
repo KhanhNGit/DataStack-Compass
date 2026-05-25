@@ -1,0 +1,8 @@
+# docker-compose.yml
+services:
+  analyzer:
+    image: oss-tracker:v1.1
+    container_name: oss_release_analyzer
+    volumes:
+      # Maps the container's reports directory to the local host
+      - ./reports:/app/reports
