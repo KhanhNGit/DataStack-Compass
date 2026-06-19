@@ -1,0 +1,46 @@
+# config_v2.yaml
+# File cấu hình Demo chứa 6 công cụ (3 GitHub, 3 Jira)
+# Dùng để test các chiến thuật crawl version constraints đa dạng.
+
+sources:
+  # ==========================================
+  # NHÓM 1: CHUẨN GITHUB RELEASES (3 CÔNG CỤ)
+  # ==========================================
+  
+  # 1. Cào các bản nằm trong khoảng (SpecifierSet AND)
+  - name: keycloak
+    url: https://github.com/keycloak/keycloak
+    version_constraint: ">= 22.0.0, < 22.1.0"
+    
+  # 2. Cào đích danh nhiều phiên bản rời rạc (Comma-separated OR)
+  - name: datahub
+    url: https://github.com/datahub-project/datahub
+    version_constraint: "0.12.0, ==0.12.1, =0.13.0"
+
+  # 3. Cào tất cả mọi thứ (Quy tắc All tối thượng)
+  - name: apache_airflow
+    url: https://github.com/apache/airflow
+    version_constraint: "all"
+
+
+  # ==========================================
+  # NHÓM 2: CHUẨN APACHE JIRA (3 CÔNG CỤ)
+  # ==========================================
+  
+  # 4. Chỉ cào một bản mới nhất hiện tại (Quy tắc Latest)
+  - name: apache_kafka
+    url: JIRA_KAFKA
+    version_constraint: "latest"
+
+  # 5. Cào hất từ 1 mốc cũ lên tới tận bản mới nhất hiện nay (Unbounded SpecifierSet)
+  - name: apache_hbase
+    url: JIRA_HBASE
+    version_constraint: ">= 2.5.0"
+
+  # 6. Mix điều kiện OR phức tạp (List YAML) - Cào Latest VÀ cào thêm 2 bản cũ
+  - name: apache_ranger
+    url: JIRA_RANGER
+    version_constraint:
+      - "latest"
+      - "2.3.0"
+      - "2.4.0"

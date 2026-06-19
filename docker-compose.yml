@@ -1,6 +1,9 @@
 # docker-compose.yml
 services:
   analyzer:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile
     image: oss-tracker:v1.1
     container_name: oss_release_analyzer
     volumes:

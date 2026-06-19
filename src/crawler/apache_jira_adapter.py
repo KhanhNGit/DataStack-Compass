@@ -1,5 +1,6 @@
 import requests
 import logging
+from typing import Iterator
 from packaging.version import parse, InvalidVersion
 from src.crawler.base_adapter import BaseAdapter
 
@@ -13,42 +14,31 @@ class ApacheJiraAdapter(BaseAdapter):
         self.project_key = project_key.upper()
         self.base_api = "https://issues.apache.org/jira/rest/api/2"
 
-    def fetch_main(self) -> str:
+    def fetch_pages(self) -> Iterator[str]:
         # Lấy danh sách toàn bộ versions của project
         url = f"{self.base_api}/project/{self.project_key}/versions"
         response = requests.get(url, timeout=15)
         response.raise_for_status()
-        return response.text # Trả về list JSON các versions
+        yield response.text # Trả về list JSON các versions
 
-    def parse_versions(self, main_json: str, target_version: str | None = None) -> tuple[str, str]:
+    def parse_versions(self, main_json: str) -> list[str]:
         import json
         from packaging.version import parse, InvalidVersion
         
         versions_data = json.loads(main_json)
-        version_map = {} # Dùng dict để map [Version Object] -> [Chuỗi nguyên gốc trên Jira]
+        version_map = {}
         
         for v in versions_data:
             if v.get('released') and not v.get('archived'):
                 original_name = v.get('name', '')
                 try:
                     parsed_v = parse(original_name)
-                    # Lọc bỏ các bản không ổn định (như alpha, beta, rc, preview)
-                    # if not parsed_v.is_prerelease:
                     version_map[parsed_v] = original_name
                 except InvalidVersion:
                     continue
                     
-        # Sắp xếp các object version từ lớn xuống bé
         sorted_parsed_versions = sorted(version_map.keys(), reverse=True)
-        
-        if len(sorted_parsed_versions) < 2:
-            raise ValueError(f"Not enough stable versions found for {self.project_key} in Jira.")
-            
-        # Trả về chính xác chuỗi gốc của Jira thay vì chuỗi đã bị Python format lại
-        latest_original = version_map[sorted_parsed_versions[0]]
-        prev_original = version_map[sorted_parsed_versions[1]]
-        
-        return latest_original, prev_original
+        return [version_map[v] for v in sorted_parsed_versions]
 
     def fetch_detail(self, main_json: str, version: str) -> str:
         # Trả về version thay vì HTML chi tiết. Logic cào issue nằm ở hàm extract_notes.

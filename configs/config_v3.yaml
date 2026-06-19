@@ -1,0 +1,125 @@
+# config_v3.yaml
+# Cấu hình danh sách 31 công cụ Big Data phục vụ hệ thống DataStack Compass
+# Tất cả đều được cấu hình để cào duy nhất phiên bản mới nhất (latest)
+
+sources:
+  # ==========================================
+  # NHÓM 1: CHUẨN GITHUB RELEASES (19 CÔNG CỤ)
+  # (Tương thích: GenericGitHubAdapter)
+  # ==========================================
+  
+  # --- Phân hệ Platform Operation ---
+  - name: keycloak
+    url: https://github.com/keycloak/keycloak
+    version_constraint: "latest"
+  - name: hashicorp_vault
+    url: https://github.com/hashicorp/vault
+    version_constraint: "latest"
+  - name: rancher
+    url: https://github.com/rancher/rancher
+    version_constraint: "latest"
+  - name: prometheus
+    url: https://github.com/prometheus/prometheus
+    version_constraint: "latest"
+  - name: grafana
+    url: https://github.com/grafana/grafana
+    version_constraint: "latest"
+  - name: kubernetes
+    url: https://github.com/kubernetes/kubernetes
+    version_constraint: "latest"
+
+  # --- Phân hệ Data Governance ---
+  - name: datahub
+    url: https://github.com/datahub-project/datahub
+    version_constraint: "latest"
+  - name: great_expectations
+    url: https://github.com/great-expectations/great_expectations
+    version_constraint: "latest"
+
+  # --- Phân hệ Data Consumption ---
+  - name: apache_superset
+    url: https://github.com/apache/superset
+    version_constraint: "latest"
+  - name: metabase
+    url: https://github.com/metabase/metabase
+    version_constraint: "latest"
+
+  # --- Phân hệ Data Storage ---
+  - name: starrocks   # Thuộc cả phân hệ Data Processing
+    url: https://github.com/StarRocks/starrocks
+    version_constraint: "latest"
+  - name: apache_iceberg
+    url: https://github.com/apache/iceberg
+    version_constraint: "latest"
+  - name: apache_hudi
+    url: https://github.com/apache/hudi
+    version_constraint: "latest"
+  - name: delta_lake
+    url: https://github.com/delta-io/delta
+    version_constraint: "latest"
+  - name: minio
+    url: https://github.com/minio/minio
+    version_constraint: "latest"
+
+  # --- Phân hệ Data Processing ---
+  - name: opensearch
+    url: https://github.com/opensearch-project/OpenSearch
+    version_constraint: "latest"
+  - name: trino
+    url: https://github.com/trinodb/trino
+    version_constraint: "latest"
+  - name: apache_airflow
+    url: https://github.com/apache/airflow
+    version_constraint: "latest"
+
+
+  # ==========================================
+  # NHÓM 2: CHUẨN APACHE JIRA (12 CÔNG CỤ)
+  # (Tương thích: ApacheJiraAdapter)
+  # ==========================================
+
+  # --- Phân hệ Data Governance ---
+  - name: hive_metastore
+    url: JIRA_HIVE
+    version_constraint: "latest"
+  - name: apache_ranger
+    url: JIRA_RANGER
+    version_constraint: "latest"
+
+  # --- Phân hệ Data Consumption ---
+  - name: apache_zeppelin
+    url: JIRA_ZEPPELIN
+    version_constraint: "latest"
+
+  # --- Phân hệ Data Storage ---
+  - name: apache_hbase
+    url: JIRA_HBASE
+    version_constraint: "latest"
+  - name: hdfs
+    url: JIRA_HADOOP # HDFS dùng chung project key HADOOP trên Jira
+    version_constraint: "latest"
+
+  # --- Phân hệ Data Ingestion ---
+  - name: apache_nifi
+    url: JIRA_NIFI
+    version_constraint: "latest"
+  - name: apache_kafka
+    url: JIRA_KAFKA
+    version_constraint: "latest"
+  - name: kafka_connect
+    url: JIRA_KAFKA # Nằm chung luồng Issue tracking với Kafka
+    version_constraint: "latest"
+
+  # --- Phân hệ Data Processing ---
+  - name: apache_solr
+    url: JIRA_SOLR
+    version_constraint: "latest"
+  - name: apache_spark
+    url: JIRA_SPARK
+    version_constraint: "latest"
+  - name: apache_flink
+    url: JIRA_FLINK
+    version_constraint: "latest"
+  - name: apache_hop
+    url: JIRA_HOP
+    version_constraint: "latest"
