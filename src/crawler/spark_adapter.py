@@ -103,6 +103,9 @@ class SparkAdapter(BaseAdapter):
                 
             elif tag.name == 'ul' and current_category:
                 for li in tag.find_all('li', recursive=False):
+                    for a in li.find_all('a'):
+                        if a.has_attr('href'):
+                            a.replace_with(f"[{a.get_text(strip=True)}]({a['href']})")
                     text = li.get_text(separator=" | ", strip=True)
                     if text and text not in notes[current_category]:
                         notes[current_category].append(text)
@@ -111,7 +114,12 @@ class SparkAdapter(BaseAdapter):
                 # Bóc tách dữ liệu bảng thành mảng 2 chiều (List of Lists)
                 table_data = []
                 for tr in tag.find_all('tr'):
-                    cols = [c.get_text(strip=True) for c in tr.find_all(['td', 'th'])]
+                    cols = []
+                    for c in tr.find_all(['td', 'th']):
+                        for a in c.find_all('a'):
+                            if a.has_attr('href'):
+                                a.replace_with(f"[{a.get_text(strip=True)}]({a['href']})")
+                        cols.append(c.get_text(strip=True))
                     if len(cols) >= 2:
                         table_data.append(cols)
                 

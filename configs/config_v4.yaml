@@ -1,0 +1,14 @@
+# config_v3.yaml
+# Cấu hình danh sách 31 công cụ Big Data phục vụ hệ thống DataStack Compass
+# Tất cả đều được cấu hình để cào duy nhất phiên bản mới nhất (latest)
+
+sources:
+  # ==========================================
+  # NHÓM 1: CHUẨN GITHUB RELEASES (19 CÔNG CỤ)
+  # (Tương thích: GenericGitHubAdapter)
+  # ==========================================
+
+  # --- Phân hệ Data Ingestion ---
+  - name: apache_nifi
+    url: JIRA_NIFI
+    version_constraint: "latest"

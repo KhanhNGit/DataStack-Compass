@@ -62,6 +62,7 @@ class ApacheJiraAdapter(BaseAdapter):
             if issue_type not in notes:
                 notes[issue_type] = []
             # Nối link ticket Jira cho SRE dễ tra cứu
-            notes[issue_type].append(f"[{issue_key}] - {summary}")
+            jira_url = f"https://issues.apache.org/jira/browse/{issue_key}"
+            notes[issue_type].append(f"[{issue_key}]({jira_url}) - {summary}")
             
         return notes

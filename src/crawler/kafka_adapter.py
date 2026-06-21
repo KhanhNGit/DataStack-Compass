@@ -55,6 +55,9 @@ class KafkaAdapter(BaseAdapter):
                 if current_category not in notes:
                     notes[current_category] = []
             elif element.name == 'li':
+                for a in element.find_all('a'):
+                    if a.has_attr('href'):
+                        a.replace_with(f"[{a.get_text(strip=True)}]({a['href']})")
                 text = element.get_text(separator=" ", strip=True)
                 if text:
                     notes[current_category].append(text)
