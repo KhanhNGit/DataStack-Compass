@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Client Preview - DataStack Compass</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 10mm;
+        }
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f6f7;
+            color: #333333;
+        }
+        /* Giả lập khung cửa sổ Email Client */
+        .email-client-window {
+            max-width: 700px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border: 1px solid #dcdde1;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        /* Thanh thông tin Header của Email (To, From, Subject) */
+        .email-meta-header {
+            background-color: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e8ecef;
+            font-size: 10pt;
+            color: #57606f;
+            line-height: 1.5;
+        }
+        .email-meta-header table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .email-meta-header td {
+            padding: 2px 0;
+            vertical-align: top;
+        }
+        .meta-label {
+            font-weight: bold;
+            width: 80px;
+            color: #2f3542;
+        }
+        .subject-line {
+            font-size: 11pt;
+            font-weight: bold;
+            color: #c0392b;
+            margin-top: 5px;
+        }
+
+        /* Thân bài viết Email thực tế (Email Body Container) */
+        .email-body {
+            padding: 30px 25px;
+            background-color: #ffffff;
+            font-size: 10.5pt;
+            line-height: 1.6;
+            color: #2f3542;
+        }
+
+        /* Biểu ngữ cảnh báo bên trong Email */
+        .alert-header-banner {
+            background-color: #fdf2f2;
+            border: 1px solid #f8b4b4;
+            border-left: 5px solid #e74c3c;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+        }
+        .alert-header-banner h2 {
+            margin: 0 0 8px 0;
+            font-size: 12pt;
+            color: #c0392b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .alert-header-banner p {
+            margin: 0;
+            color: #7f2d2d;
+            font-size: 10pt;
+        }
+
+        /* Block tiêu đề từng phần */
+        h3 {
+            font-size: 11.5pt;
+            color: #1e272e;
+            border-bottom: 2px solid #f1f2f6;
+            padding-bottom: 6px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        /* Bảng thông tin thuộc tính (Key-Value) */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .info-table td {
+            padding: 8px 12px;
+            border: 1px solid #f1f2f6;
+            font-size: 10pt;
+        }
+        .info-table tr:nth-child(even) {
+            background-color: #fafbfc;
+        }
+        .info-label {
+            font-weight: bold;
+            width: 180px;
+            color: #57606f;
+            background-color: #f8f9fa;
+        }
+
+        /* Vùng ảnh hưởng (Blast Radius) Card */
+        .radius-card {
+            background-color: #fffaf0;
+            border: 1px solid #ffeaa7;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .radius-card ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .radius-card li {
+            margin-bottom: 6px;
+            color: #d35400;
+        }
+
+        /* Khối chứa Code Script lệnh */
+        .code-block {
+            background-color: #1e272e;
+            color: #7bed9f;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 12px 15px;
+            border-radius: 4px;
+            font-size: 9.5pt;
+            white-space: pre-wrap;
+            word-break: break-all;
+            margin: 10px 0;
+            border-left: 4px solid #2ed573;
+        }
+
+        /* Nút kêu gọi hành động (Call to Action Button) */
+        .cta-btn-container {
+            text-align: center;
+            margin: 30px 0 15px 0;
+        }
+        .cta-button {
+            background-color: #c0392b;
+            color: #ffffff;
+            padding: 10px 24px;
+            font-size: 10.5pt;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        /* Chân trang Email */
+        .email-footer {
+            margin-top: 35px;
+            padding-top: 15px;
+            border-top: 1px solid #f1f2f6;
+            font-size: 9pt;
+            color: #a4b0be;
+            text-align: left;
+            line-height: 1.4;
+        }
+        .badge {
+            background-color: #e74c3c;
+            color: white;
+            padding: 2px 6px;
+            font-weight: bold;
+            border-radius: 3px;
+            font-size: 8.5pt;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="email-client-window">
+        <div class="email-meta-header">
+            <table>
+                <tr>
+                    <td class="meta-label">Từ (From):</td>
+                    <td><code>Viettel Lakehouse Platform</code> (Hệ thống giám sát tự động DataStack Compass)</td>
+                </tr>
+                <tr>
+                    <td class="meta-label">Đến (To):</td>
+                    <td><code>quanvd4@viettel.com.vn</code>; <code>sonmt4@viettel.com.vn</code></td>
+                </tr>
+                <tr>
+                    <td class="meta-label">Ngày (Date):</td>
+                    <td>Thứ Ba, Ngày 26 Tháng 5 Năm 2026, 16:07 PM (ICT)</td>
+                </tr>
+                <tr>
+                    <td class="meta-label">Tiêu đề:</td>
+                    <td class="subject-line">[CRITICAL ALERT] DataStack Compass: Phát hiện lỗ hổng bảo mật cực kỳ nghiêm trọng (CVE-2024-XXXX) trên cụm Apache Kafka</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="email-body">
+            
+            <div class="alert-header-banner">
+                <h2>🔴 CẢNH BÁO BẢO MẬT HỆ THỐNG CRITICAL</h2>
+                <p>Hệ thống vừa ghi nhận một rủi ro an ninh mạng mức độ cao. Thông qua cơ chế quét phiên bản các công cụ sử dụng trong nền tảng dữ liệu của đơn vị VIC, phát hiện lỗ hổng này ảnh hưởng trực tiếp đến cấu hình phiên bản thực tế đang chạy trên hạ tầng của đơn vị.</p>
+            </div>
+
+            <h3>📌 1. Thông tin lỗ hổng (Vulnerability Details)</h3>
+            <table class="info-table">
+                <tr>
+                    <td class="info-label">Tên thành phần</td>
+                    <td>Apache Kafka (Core Message Broker)</td>
+                </tr>
+                <tr>
+                    <td class="info-label">Mã định danh</td>
+                    <td><code>CVE-2024-XXXX</code> / <code>KAFKA-15890</code></td>
+                </tr>
+                <tr>
+                    <td class="info-label">Mức độ nghiêm trọng</td>
+                    <td><span class="badge">CRITICAL</span> <strong>(CVSS V3 Score: 9.8 / 10)</strong></td>
+                </tr>
+                <tr>
+                    <td class="info-label">Phân loại lỗi</td>
+                    <td>Thực thi mã từ xa không xác thực (Remote Code Execution - RCE)</td>
+                </tr>
+                <tr>
+                    <td class="info-label">Nguyên nhân</td>
+                    <td>Tồn tại lỗ hổng nghiêm trọng trong module xác thực SASL/Kerberos khi xử lý các gói tin bắt tay (handshake tokens) được chế tạo đặc biệt.</td>
+                </tr>
+            </table>
+
+            <h3>🎯 2. Vùng ảnh hưởng nội bộ (Blast Radius)</h3>
+            <div class="radius-card">
+                <p style="margin-top:0; font-weight:bold; color:#d35400;">Hệ thống phát hiện 01 cụm cluster đang sử dụng phiên bản có rủi ro (&lt; 3.4.0):</p>
+                <ul>
+                    <li><strong>Tên Cụm dịch vụ:</strong> <code>kafka-prod-cluster</code> (Môi trường K8s Production)</li>
+                    <li><strong>Phiên bản hiện tại:</strong> <code>3.2.0</code></li>
+                    <li><strong>Quy mô hạ tầng:</strong> 24 Nodes / Brokers</li>
+                    <li><strong>Đánh giá tác động:</strong> Nguy cơ cao bị khai thác chiếm quyền điều khiển node broker, dẫn đến rò rỉ dữ liệu sự kiện hoặc làm tê liệt toàn bộ luồng Data Ingestion.</li>
+                </ul>
+            </div>
+
+            <h3>🛠️ 3. Hành động khẩn cấp yêu cầu (Action Required)</h3>
+            <p style="margin-top:0;"><strong>Phương án 1 (Ưu tiên):</strong> Thực hiện kế hoạch nâng cấp cụm <code>kafka-prod-cluster</code> lên phiên bản vá lỗi <strong><code>3.2.3</code></strong> hoặc phiên bản ổn định cao hơn <strong><code>3.4.0</code></strong>.</p>
+            
+            <p><strong>Phương án 2 (Giải pháp xử lý tạm thời):</strong> Nếu chưa thể downtime để update cụm ngay lập tức, yêu cầu rà soát cấu hình và cô lập các pod broker đang mở cơ chế SASL không an toàn.</p>
+            
+            <p style="margin-bottom:5px; font-weight:bold; color:#2c3e50;">💡 Script kiểm tra nhanh (Lệnh kiểm tra Imperative chạy trên K8s cluster):</p>
+            <div class="code-block">kubectl get pods -n data-platform -l app=kafka -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.containers[0].env[?(@.name=="KAFKA_CFG_SASL_ENABLED")].value}{"\n"}{end}'</div>
+
+            <div class="cta-btn-container">
+                <a class="cta-button" href="#">XEM CHECKLIST NÂNG CẤP TRÊN COMPASS DASHBOARD</a>
+            </div>
+
+            <div class="email-footer">
+                * Đây là thông báo tự động được thiết lập bởi hệ thống <strong>DataStack Compass</strong> dựa trên việc giám sát các kho mã nguồn mở toàn cầu và đối chiếu công cụ triển khai trong nền tảng dữ liệu toàn Tập Đoàn.<br>
+                * Vui lòng cập nhật tiến độ xử lý hoặc tạo ticket khắc phục lỗi trên hệ thống nội bộ của đơn vị sau khi hoàn tất xử lý.
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

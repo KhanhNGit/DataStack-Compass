@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ component|upper }} - Release Report</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm 15mm;
+        }
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            padding: 20px; 
+            font-family: 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
+            font-size: 10.5pt;
+            line-height: 1.6;
+            color: #2c3e50;
+            background-color: #f4f6f7;
+        }
+        
+        .document-container {
+            max-width: 800px; 
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #ffffff;
+            padding: 30px 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            border-radius: 4px;
+        }
+        
+        .header-banner {
+            margin: -30px -40px 25px -40px;
+            padding: 25px 40px;
+            background-color: #1a252f;
+            color: #ffffff;
+            border-bottom: 4px solid #3498db;
+            border-radius: 4px 4px 0 0;
+        }
+        .header-banner .alert-tag {
+            background-color: #e74c3c;
+            color: white;
+            padding: 3px 10px;
+            font-size: 9pt;
+            font-weight: bold;
+            border-radius: 3px;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+        .header-banner h1 {
+            margin: 0;
+            font-size: 20pt;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+        }
+        
+        .meta-table {
+            width: 100%;
+            margin-top: 15px;
+            border-collapse: collapse;
+        }
+        .meta-table td {
+            padding: 0;
+            font-size: 10pt;
+            color: #bdc3c7;
+            vertical-align: middle;
+        }
+        .badge {
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 9.5pt;
+            text-transform: uppercase;
+            color: #ffffff;
+        }
+        .badge-critical { background-color: #c0392b; }
+        .badge-warning { background-color: #d35400; }
+        .badge-stable { background-color: #2ecc71; }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        h2 {
+            font-size: 13.5pt;
+            color: #1a252f;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .cve-section h2 {
+            color: #c0392b;
+            border-left-color: #c0392b;
+        }
+        .cve-warning-text {
+            margin-top: 0; 
+            margin-bottom: 15px; 
+            font-style: italic; 
+            color: #c0392b;
+            background-color: #fdf2f2;
+            padding: 8px 12px;
+            border-left: 3px solid #e74c3c;
+            font-size: 10pt;
+        }
+
+        .summary-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #7f8c8d;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .content-list { margin: 0; padding-left: 15px; }
+        .content-list li {
+            margin-bottom: 12px;
+            padding-left: 5px;
+            list-style-type: square;
+            color: #2c3e50;
+        }
+        
+        .ticket {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #eaeded;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 9pt;
+            color: #2980b9;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            margin-left: 5px;
+        }
+        
+        .text-danger { color: #c0392b; font-weight: bold; }
+        .text-warning { color: #d35400; font-weight: bold; }
+        .text-success { color: #27ae60; font-weight: bold; }
+        .text-info { color: #2980b9; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="document-container">
+        <div class="header-banner">
+            {% if risk_level|lower in ['critical', 'high'] %}
+            <div class="alert-tag">🔴 Compass Alert</div>
+            {% endif %}
+            <h1>{{ component|replace('_', ' ')|upper }} — VERSION {{ version }}</h1>
+            
+            <table class="meta-table">
+                <tr>
+                    <td style="width: 35%;">📅 <strong>Date:</strong> {{ timestamp|default('N/A') }}</td>
+                    <td style="width: 35%;">🏷️ <strong>Status:</strong> 
+                        {% if 'beta' in version|lower or 'rc' in version|lower or 'alpha' in version|lower %}
+                        <span class="badge badge-warning">Beta / RC</span>
+                        {% else %}
+                        <span class="badge badge-stable">Stable (GA)</span>
+                        {% endif %}
+                    </td>
+                    <td style="width: 30%;">📊 <strong>Risk Level:</strong> 
+                        {% if risk_level|lower in ['critical', 'high'] %}
+                        <span class="badge badge-critical">{{ risk_level|upper }}</span>
+                        {% elif risk_level|lower == 'medium' %}
+                        <span class="badge badge-warning">{{ risk_level|upper }}</span>
+                        {% else %}
+                        <span class="badge badge-stable">{{ risk_level|upper }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        {% set section_num = namespace(value=1) %}
+
+        <div class="section">
+            <h2>{{ section_num.value }}. Advisor Summary</h2>
+            <div class="summary-box">
+                {{ advisor_summary.overview }}
+            </div>
+            {% set section_num.value = section_num.value + 1 %}
+        </div>
+
+        {% if cves and cves|length > 0 %}
+        <div class="section cve-section">
+            <h2>🚨 {{ section_num.value }}. CRITICAL SECURITY & CVEs</h2>
+            <p class="cve-warning-text">
+                ⚠️ Warning: A security vulnerability in previous versions has been patched in this release.
+            </p>
+            <ul class="content-list">
+                {% for item in cves %}
+                <li>
+                    <strong>{{ item.title }}</strong>: {{ item.description }}
+                    {% if item.ticket_id %}
+                    <a class="ticket" href="{{ item.ticket_url }}">{{ item.ticket_id }}</a>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% set section_num.value = section_num.value + 1 %}
+        </div>
+        {% endif %}
+
+        {% if breaking_changes and breaking_changes|length > 0 %}
+        <div class="section">
+            <h2>{{ section_num.value }}. Breaking Changes</h2>
+            <p style="margin-top: 0; margin-bottom: 10px; font-style: italic; color: #7f8c8d;">
+                * Backwards-incompatible changes that require engineering review before upgrading.
+            </p>
+            <ul class="content-list">
+                {% for item in breaking_changes %}
+                <li>
+                    {% if item.change_type == 'REMOVED' %}
+                        <span class="text-danger">[⛔ REMOVED]</span>
+                    {% elif item.change_type == 'REPLACED' %}
+                        <span class="text-warning">[⚠️ REPLACED]</span>
+                    {% elif item.change_type == 'DEPRECATED' %}
+                        <span class="text-warning">[⏳ DEPRECATED]</span>
+                    {% else %}
+                        <span class="text-info">[🔧 CHANGED]</span>
+                    {% endif %}
+                    <strong>{{ item.title }}</strong>: {{ item.description }}
+                    {% if item.ticket_id %}
+                    <a class="ticket" href="{{ item.ticket_url }}">{{ item.ticket_id }}</a>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% set section_num.value = section_num.value + 1 %}
+        </div>
+        {% endif %}
+
+        {% if bug_fixes and bug_fixes|length > 0 %}
+        <div class="section">
+            <h2>{{ section_num.value }}. Bug Fixes</h2>
+            <ul class="content-list">
+                {% for item in bug_fixes %}
+                <li>
+                    <strong>{{ item.title }}</strong>: {{ item.description }}
+                    {% if item.ticket_id %}
+                    <a class="ticket" href="{{ item.ticket_url }}">{{ item.ticket_id }}</a>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% set section_num.value = section_num.value + 1 %}
+        </div>
+        {% endif %}
+
+        {% if new_features and new_features|length > 0 %}
+        <div class="section">
+            <h2>{{ section_num.value }}. New Features & Enhancements</h2>
+            <ul class="content-list">
+                {% for item in new_features %}
+                <li>
+                    <strong>{{ item.title }}</strong>: {{ item.description }}
+                    {% if item.ticket_id %}
+                    <a class="ticket" href="{{ item.ticket_url }}">{{ item.ticket_id }}</a>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% set section_num.value = section_num.value + 1 %}
+        </div>
+        {% endif %}
+
+    </div>
+
+</body>
+</html>

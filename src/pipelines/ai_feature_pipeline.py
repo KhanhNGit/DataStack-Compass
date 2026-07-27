@@ -16,7 +16,6 @@ def setup_directories():
 def process_file(filepath: str, gemini: GeminiClient):
     filename = os.path.basename(filepath)
     summary_path = os.path.join('reports/summary_json', filename.replace('.json', '_summary.json'))
-    intermediate_path = os.path.join('reports/intermediate_features', filename)
     
     if os.path.exists(summary_path):
         logger.info(f"Skipping {filename}, summary already exists.")
@@ -32,37 +31,11 @@ def process_file(filepath: str, gemini: GeminiClient):
 
     logger.info(f"--- Processing {filename} ---")
     
-    features = gemini.extract_features(notes)
-    if not features:
-        logger.warning(f"No new features found by Gemini for {filename}.")
+    # Dùng One-Shot Summary thay vì chẻ nhỏ từng file
+    summarized_data = gemini.summarize_release_one_shot(notes)
+    if not summarized_data:
+        logger.warning(f"Failed to generate one-shot summary for {filename}.")
         return
-        
-    with open(intermediate_path, 'w', encoding='utf-8') as f:
-        json.dump(features, f, indent=4, ensure_ascii=False)
-    logger.info(f"Dumped {len(features)} intermediate features to {intermediate_path}")
-
-    final_features = []
-    for feature in features:
-        feature_name = feature.get('feature_name')
-        link = feature.get('link')
-        original_text = feature.get('original_text')
-        
-        logger.info(f"Processing Feature: {feature_name}")
-        ai_summary = ""
-        
-        if link:
-            scraper = ScraperFactory.create(link)
-            raw_content = scraper.scrape()
-            
-            if raw_content:
-                ai_summary = gemini.summarize_feature(raw_content)
-                
-        final_features.append({
-            "feature_name": feature_name,
-            "original_text": original_text,
-            "reference_link": link,
-            "ai_summary": ai_summary
-        })
         
     final_report = {
         "timestamp": data.get("timestamp"),
@@ -70,12 +43,16 @@ def process_file(filepath: str, gemini: GeminiClient):
         "version": data.get("version"),
         "risk_level": data.get("risk_level"),
         "has_cve": data.get("has_cve"),
-        "features": final_features
+        "advisor_summary": summarized_data.get("advisor_summary", {}),
+        "cves": summarized_data.get("cves", []),
+        "breaking_changes": summarized_data.get("breaking_changes", []),
+        "bug_fixes": summarized_data.get("bug_fixes", []),
+        "new_features": summarized_data.get("new_features", [])
     }
     
     with open(summary_path, 'w', encoding='utf-8') as f:
         json.dump(final_report, f, indent=4, ensure_ascii=False)
-    logger.info(f"Successfully saved AI summary to {summary_path}")
+    logger.info(f"Successfully saved AI one-shot summary to {summary_path}")
 
 def run():
     load_env()

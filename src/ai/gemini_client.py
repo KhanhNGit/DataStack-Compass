@@ -12,13 +12,28 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-class FeatureExtraction(BaseModel):
-    feature_name: str
-    original_text: str
-    link: str
+class ReleaseItem(BaseModel):
+    title: str
+    description: str
+    ticket_id: str
+    ticket_url: str
 
-class ExtractedFeatures(BaseModel):
-    features: list[FeatureExtraction]
+class BreakingChangeItem(BaseModel):
+    title: str
+    description: str
+    ticket_id: str
+    ticket_url: str
+    change_type: str
+
+class AdvisorSummary(BaseModel):
+    overview: str
+
+class SummarizedRelease(BaseModel):
+    advisor_summary: AdvisorSummary
+    cves: list[ReleaseItem]
+    breaking_changes: list[BreakingChangeItem]
+    bug_fixes: list[ReleaseItem]
+    new_features: list[ReleaseItem]
 
 class BlogSummary(BaseModel):
     summary_content: str
@@ -57,69 +72,46 @@ class GeminiClient:
                     raise e
         raise Exception("Max retries exceeded for Gemini API due to Rate Limits.")
 
-    def extract_features(self, notes_dict: dict) -> list[dict]:
+    def summarize_release_one_shot(self, notes_dict: dict) -> dict:
         if not self.client:
-            logger.error("GeminiClient not initialized. Missing API Key or google-genai package.")
-            return []
+            logger.error("GeminiClient not initialized. Missing API Key.")
+            return {}
+            
+        safe_content = json.dumps(notes_dict, ensure_ascii=False)[:100000]
             
         prompt = f"""
-        Bạn là một chuyên gia phân tích phần mềm. Hãy đọc cấu trúc Release Notes dưới đây:
-        {json.dumps(notes_dict, ensure_ascii=False, indent=2)}
+        You are a senior software/data engineer analyzing release notes. Please read the entire Release Notes below:
+        {safe_content}
         
-        Nhiệm vụ:
-        1. Đọc và phân loại toàn bộ các mục trong Release Notes.
-        2. CHỈ GIỮ LẠI các mục mô tả "Tính năng mới" (New Features) hoặc "Cải tiến" (Enhancements).
-        3. LOẠI BỎ hoàn toàn: Bản vá lỗi (Bug fixes), Cập nhật tài liệu (Docs), Chores.
-        4. Trích xuất đường link gốc đi kèm (nếu có) vào trường 'link'. Nếu không có để chuỗi rỗng "".
+        Task:
+        1. Classify ALL items in the release notes into exactly 4 groups. DO NOT MISS ANY ITEM. Follow these STRICT rules:
+           - CVEs: Security vulnerabilities, CVEs, and security patches.
+           - Breaking Changes: Any backwards-incompatible changes, removals (e.g., dropping databases/columns), deprecations, or downgrade compatibility issues. (Example: Dropping a column family on downgrade MUST be a Breaking Change).
+           - Bug Fixes: Error resolutions, memory leak fixes, crash preventions, and logic corrections.
+           - New Features: New capabilities, performance optimizations, refactoring, and documentation updates. (NOTE: All documentation updates MUST go here, NOT in Bug Fixes).
+        2. For each item, extract the `ticket_id` (e.g. KAFKA-14902) and `ticket_url`.
+        3. Rewrite the content of each item (`title` and `description`) to be smooth, professional, and easy to understand for end-users, while preserving the core technical meaning.
+        4. For Breaking Changes, you MUST classify the `change_type` as one of: REMOVED, REPLACED, DEPRECATED, or OTHER.
+        5. Create an `advisor_summary.overview` that provides an objective, narrative summary of the main focus of this release (e.g., "This release focuses on..."). DO NOT use imperative language like "Upgrade immediately".
+        6. CRITICAL LANGUAGE AND CONTEXT RULES:
+           - Output EVERYTHING entirely in English.
+           - DO NOT compress or shorten the technical context. Ensure the rewritten descriptions remain fully detailed, comprehensive, and preserve all original technical nuances and configurations.
         """
         
-        logger.info("Calling Gemini API to extract features (Semantic Filtering)...")
+        logger.info("Calling Gemini API to summarize release one-shot...")
         try:
             config = types.GenerateContentConfig(
                 response_mime_type="application/json",
-                response_schema=ExtractedFeatures,
-                temperature=0.1
+                response_schema=SummarizedRelease,
+                temperature=0.2
             )
+            time.sleep(4)
             response = self._generate_with_retry(prompt, config)
             result = json.loads(response.text)
-            return result.get("features", [])
+            return result
         except Exception as e:
-            logger.error(f"Failed to extract features via Gemini: {e}")
-            return []
-
-    def summarize_feature(self, issue_content: str) -> str:
-        if not self.client:
-            return "No API Key provided. Cannot summarize."
-            
-        # Giới hạn độ dài text nạp vào để tránh lỗi quota/context window quá khổ nếu crawl rác
-        safe_content = issue_content[:50000] 
-            
-        prompt = f"""
-        Bạn là một chuyên gia phân tích phần mềm. Hãy tóm tắt nội dung cuộc thảo luận / Pull Request / Issue dưới đây.
-        
-        NỘI DUNG:
-        {safe_content}
-        
-        YÊU CẦU BẮT BUỘC:
-        1. TUYỆT ĐỐI KHÔNG SỬ DỤNG CÂU DẪN DẮT (ví dụ: "Dưới đây là tóm tắt...", "Tuyệt vời...", "Tôi là AI..."). BẮT ĐẦU NGAY LẬP TỨC vào nội dung tóm tắt.
-        2. Linh hoạt độ dài tùy độ khó, nhưng TUYỆT ĐỐI KHÔNG VƯỢT QUÁ 7 CÂU.
-        3. Bắt buộc làm rõ 3 khía cạnh:
-           - Bối cảnh / Vấn đề (Context/Problem)
-           - Giải pháp kỹ thuật (Solution)
-           - Giá trị mang lại (Impact/Benefit)
-        4. Viết súc tích, dễ hiểu, có thể dùng format danh sách (bullet points).
-        """
-        
-        logger.info("Calling Gemini API to summarize feature...")
-        try:
-            config = types.GenerateContentConfig(temperature=0.3)
-            # Sleep 4s explicitly before summarizing each feature to smooth out requests (15 RPM limit)
-            time.sleep(4) 
-            response = self._generate_with_retry(prompt, config)
-            return response.text.strip()
-        except Exception as e:
-            logger.error(f"Failed to summarize via Gemini: {e}")
-            return ""
+            logger.error(f"Failed to summarize release via Gemini: {e}")
+            return {}
 
     def summarize_blog_post(self, content: str) -> dict:
         if not self.client:
@@ -145,6 +137,10 @@ NỘI DUNG BÀI VIẾT:
 YÊU CẦU ĐỊNH DẠNG:
 - summary_content: Một đoạn văn bản Markdown trình bày trôi chảy. Tùy thuộc vào loại bài viết (tutorial, chia sẻ kiến trúc, bản tin...), hãy tóm tắt linh hoạt sao cho người đọc nắm được: bài toán/bối cảnh, kiến trúc/giải pháp đề xuất, công nghệ sử dụng, các điểm triển khai kỹ thuật cần lưu ý, và kết quả/hiệu năng (nếu có). Trình bày kết hợp văn xuôi và danh sách (bullet points) sao cho tự nhiên nhất.
 - keywords_tags: Mảng các chuỗi hashtag liên quan đến công nghệ (ví dụ: #kafka) và lĩnh vực (ví dụ: #data-engineering, #lakehouse).
+
+GÓC NHÌN TRÌNH BÀY (QUAN TRỌNG):
+- TUYỆT ĐỐI KHÔNG dùng các cụm từ mở đầu như "Bài viết này...", "Tác giả chia sẻ...", "Blog này hướng dẫn...".
+- Viết tóm tắt dưới dạng truyền đạt trực tiếp kiến thức/nội dung. Người đọc summary phải có cảm giác họ đang đọc chính bài viết đó nhưng ở phiên bản cô đọng nhất. Bắt đầu thẳng vào vấn đề!
 
 YÊU CẦU ĐỘ DÀI:
 {length_instruction}

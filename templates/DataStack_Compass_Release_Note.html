@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>DataStack Compass - Release Report (with CVEs)</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm 15mm;
+        }
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            padding: 20px; 
+            font-family: 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
+            font-size: 10.5pt;
+            line-height: 1.6;
+            color: #2c3e50;
+            background-color: #f4f6f7; /* Nền xám nhạt cho web */
+        }
+        
+        .document-container {
+            max-width: 800px; 
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #ffffff;
+            padding: 30px 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            border-radius: 4px;
+        }
+        
+        /* Header Banner Block */
+        .header-banner {
+            margin: -30px -40px 25px -40px;
+            padding: 25px 40px;
+            background-color: #1a252f;
+            color: #ffffff;
+            border-bottom: 4px solid #3498db;
+            border-radius: 4px 4px 0 0;
+        }
+        .header-banner .alert-tag {
+            background-color: #e74c3c;
+            color: white;
+            padding: 3px 10px;
+            font-size: 9pt;
+            font-weight: bold;
+            border-radius: 3px;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+        .header-banner h1 {
+            margin: 0;
+            font-size: 20pt;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+        }
+        
+        /* Meta Layout Table */
+        .meta-table {
+            width: 100%;
+            margin-top: 15px;
+            border-collapse: collapse;
+        }
+        .meta-table td {
+            padding: 0;
+            font-size: 10pt;
+            color: #bdc3c7;
+            vertical-align: middle;
+        }
+        .badge {
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 9.5pt;
+            text-transform: uppercase;
+            color: #ffffff;
+        }
+        .badge-critical { background-color: #c0392b; }
+        .badge-stable { background-color: #2ecc71; }
+        
+        /* Section Styling */
+        .section {
+            margin-bottom: 30px;
+        }
+        h2 {
+            font-size: 13.5pt;
+            color: #1a252f;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        /* Cấu hình đặc biệt cho mục CVE */
+        .cve-section h2 {
+            color: #c0392b;
+            border-left-color: #c0392b;
+        }
+        .cve-warning-text {
+            margin-top: 0; 
+            margin-bottom: 15px; 
+            font-style: italic; 
+            color: #c0392b;
+            background-color: #fdf2f2;
+            padding: 8px 12px;
+            border-left: 3px solid #e74c3c;
+            font-size: 10pt;
+        }
+
+        /* Summary Box */
+        .summary-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #7f8c8d;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 0 4px 4px 0;
+        }
+        .summary-box ul { margin: 0; padding-left: 20px; }
+        .summary-box li { margin-bottom: 6px; color: #34495e; }
+        
+        /* Content List */
+        .content-list { margin: 0; padding-left: 15px; }
+        .content-list li {
+            margin-bottom: 12px;
+            padding-left: 5px;
+            list-style-type: square;
+            color: #2c3e50;
+        }
+        
+        /* Ticket Link Style */
+        .ticket {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #eaeded;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 9pt;
+            color: #2980b9;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            margin-left: 5px;
+        }
+        
+        /* Review Boxes */
+        .review-container { margin-top: 15px; }
+        .review-box {
+            background-color: #f4f6f7;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #e5e8e8;
+        }
+        .review-header-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+        .review-header-table td { padding: 0; vertical-align: middle; }
+        .review-user { font-weight: bold; font-size: 10pt; color: #2c3e50; }
+        .review-text {
+            font-style: italic;
+            font-size: 10pt;
+            color: #555555;
+            margin: 5px 0 0 0;
+            line-height: 1.5;
+        }
+        .score-box {
+            background-color: #ebf5fb;
+            border: 1px solid #a9ccee;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #2980b9;
+            display: inline-block;
+        }
+        
+        /* Text Highlighting */
+        .text-danger { color: #c0392b; font-weight: bold; }
+        .text-warning { color: #d35400; font-weight: bold; }
+        .text-success { color: #27ae60; font-weight: bold; }
+        .text-info { color: #2980b9; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="document-container">
+        <div class="header-banner">
+            <div class="alert-tag">🔴 Compass Alert</div>
+            <h1>APACHE KAFKA — PHIÊN BẢN 3.6.0</h1>
+            
+            <table class="meta-table">
+                <tr>
+                    <td style="width: 35%;">📅 <strong>Ngày phát hành:</strong> 28/09/2023</td>
+                    <td style="width: 35%;">🏷️ <strong>Trạng thái:</strong> <span class="badge badge-stable">Stable (GA)</span></td>
+                    <td style="width: 30%;">📊 <strong>Mức độ rủi ro:</strong> <span class="badge badge-critical">CRITICAL</span></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>1. Đánh giá nhanh từ hệ thống (DataStack Core Advisor)</h2>
+            <div class="summary-box">
+                <ul>
+                    <li><strong>Khuyến nghị vận hành:</strong> Yêu cầu cập nhật khẩn cấp. Phiên bản này chứa các bản vá cho lỗ hổng bảo mật đặc biệt nghiêm trọng có thể dẫn đến lộ lọt dữ liệu hoặc thực thi mã trái phép.</li>
+                    <li><strong>Bảo mật &amp; Lỗ hổng (CVE):</strong> Phát hiện <span class="text-danger">02 lỗ hổng bảo mật (Critical/High)</span> đã được khắc phục.</li>
+                    <li><strong>Thay đổi cấu trúc (Breaking Changes):</strong> Phát hiện <span class="text-warning">02 thay đổi quan trọng</span> có thể gây phá vỡ cấu trúc tương thích của file cấu hình hiện tại.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- MỤC BỔ SUNG: CVE NỔI BẬT LÊN VỊ TRÍ SỐ 2 -->
+        <div class="section cve-section">
+            <h2>🚨 2. LỖ HỔNG BẢO MẬT ĐƯỢC VÁ (CRITICAL SECURITY & CVEs)</h2>
+            <p class="cve-warning-text">
+                ⚠️ Cảnh báo: Phiên bản trước đó đang chứa lỗ hổng bảo mật. Đội ngũ Security yêu cầu bắt buộc nâng cấp hoặc áp dụng giải pháp cô lập (Workaround) đối với các cụm đang vận hành.
+            </p>
+            <ul class="content-list">
+                <li>
+                    <span class="text-danger">[🔴 CVE-2023-34045]</span> Lỗ hổng cho phép kẻ tấn công vượt qua cơ chế phân quyền (Authorization Bypass) khi sử dụng giao thức SASL/PLAIN kết hợp với một số thư viện client cũ. Hệ thống đã vá bằng cách bổ sung kiểm tra strict-validation.
+                    <br><span style="font-size: 9pt; color: #7f8c8d;">👉 Mức độ: CRITICAL (CVSS: 9.1)</span>
+                    <a class="ticket" href="https://issues.apache.org/jira/browse/KAFKA-14902">KAFKA-14902</a>
+                </li>
+                <li style="margin-top: 8px;">
+                    <span class="text-warning">[🟠 SECURITY]</span> Nâng cấp thư viện lõi <code>snappy-java</code> lên bản <code>1.1.10.4</code> để vá lỗ hổng thực thi mã từ xa (RCE) do lỗi tràn bộ đệm (Buffer Overflow) của thư viện bên thứ 3.
+                    <br><span style="font-size: 9pt; color: #7f8c8d;">👉 Mức độ: HIGH (CVSS: 8.2)</span>
+                    <a class="ticket" href="https://issues.apache.org/jira/browse/KAFKA-15011">KAFKA-15011</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>3. Thay đổi cấu trúc &amp; Cấu hình lỗi thời (Breaking Changes)</h2>
+            <p style="margin-top: 0; margin-bottom: 10px; font-style: italic; color: #7f8c8d;">
+                * Tham số/Cấu hình không còn được hỗ trợ, yêu cầu kỹ sư SRE cập nhật file cấu hình trước khi thực hiện nâng cấp cụm.
+            </p>
+            <ul class="content-list">
+                <li>
+                    <span class="text-danger">[⛔ LOẠI BỎ]</span> Thuộc tính cấu hình <code class="text-danger">log.message.format.version</code> đã chính thức bị gỡ bỏ hoàn toàn. Mọi cụm cluster sau khi nâng cấp bắt buộc phải sử dụng định dạng message format v2.
+                    <a class="ticket" href="https://issues.apache.org/jira/browse/KAFKA-14500">KAFKA-14500</a>
+                </li>
+                <li>
+                    <span class="text-warning">[⚠️ THAY THẾ]</span> Cơ chế quản lý quyền hạn dựa trên ZooKeeper (<code class="text-warning">ZooKeeper-based ACL</code>) không còn được khuyến khích sử dụng công khai. Đội ngũ kỹ sư nền tảng cần lập kế hoạch chi tiết để dịch chuyển toàn bộ sang <code class="text-success">KRaft-based ACL</code>.
+                    <a class="ticket" href="https://issues.apache.org/jira/browse/KAFKA-14612">KAFKA-14612</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>4. Lỗi vận hành đã được vá (Critical Bug Fixes)</h2>
+            <ul class="content-list">
+                <li>
+                    <span class="text-info">[🐛 STORAGE]</span> Khắc phục triệt để hiện tượng rò rỉ bộ nhớ (Memory Leak) xảy ra khi thành phần KRaft Controller xử lý đồng thời hàng ngàn request tạo/xóa topic cùng một thời điểm.
+                    <a class="ticket" href="https://issues.apache.org/jira/browse/KAFKA-15123">KAFKA-15123</a>
+                </li>
+                <li>
+                    <span class="text-info">[🐛 NETWORK]</span> Sửa lỗi nghiêm trọng khiến Broker bị rơi vào trạng thái treo (Deadlock) trong quá trình thực hiện luân chuyển và bầu chọn lại Partition Leader khi mạng chập chờn.
+                    <a class="ticket" href="https://issues.apache.org/jira/browse/KAFKA-15201">KAFKA-15201</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>5. Tính năng mới nổi bật (New Features &amp; Enhancements)</h2>
+            <ul class="content-list">
+                <li>
+                    <span class="text-success">[🌟 TIERED STORAGE]</span> Cung cấp quyền tiếp cận sớm (Early Access) cho tính năng lưu trữ phân tầng. Cho phép hệ thống tự động đẩy các đoạn log cũ, ít truy cập xuống S3/MinIO.
+                    <a class="ticket" href="https://cwiki.apache.org/confluence/display/KAFKA/KIP-405">KIP-405</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>6. Đánh giá thực chiến từ cộng đồng nội bộ (Internal Tech Review)</h2>
+            
+            <div class="score-box">
+                ⭐ Điểm tín nhiệm kỹ thuật nội bộ: 4.2 / 5.0 (Dựa trên 05 lượt đánh giá thực tế)
+            </div>
+
+            <div class="review-container">
+                <div class="review-box">
+                    <table class="review-header-table">
+                        <tr>
+                            <td class="review-user">👤 Nguyễn Văn A — Đội ngũ Nền tảng Dữ liệu (Data Platform Team)</td>
+                            <td style="text-align: right; font-size: 9pt; color: #7f8c8d;">👍 3 Lượt đồng ý</td>
+                        </tr>
+                    </table>
+                    <p class="review-text">
+                        "Đội mình đã deploy thử nghiệm thành công phiên bản 3.6.0 này trên cụm Sandbox của trung tâm. Tính năng Tiered Storage chạy rất khớp với hệ thống MinIO nội bộ. Tuy nhiên anh em lưu ý bắt buộc phải thiết lập thêm tham số ẩn `remote.log.storage.system.enable=true` thì hệ thống mới kích hoạt luồng dọn dẹp log tự động."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
