@@ -1,0 +1,4 @@
+[
+  { "name": "KDnuggets", "url": "https://www.kdnuggets.com", "category": "platform", "topics": "Analytics", "max_days_back": 1, "max_posts_per_run": 1, "pull_all": false, "crawl_type": "auto" },
+  { "name": "Towards Data Science", "url": "https://towardsdatascience.com", "category": "platform", "topics": "Data Science", "max_days_back": 1, "max_posts_per_run": 1, "pull_all": false, "crawl_type": "auto" }
+]

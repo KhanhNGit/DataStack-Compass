@@ -1,0 +1,411 @@
+{
+  "total": 67,
+  "found": 39,
+  "not_found": 28,
+  "found_list": [
+    {
+      "name": "KDnuggets",
+      "url": "https://www.kdnuggets.com",
+      "rss": "https://www.kdnuggets.com/feed/",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "Dataconomy",
+      "url": "https://dataconomy.com",
+      "rss": "https://dataconomy.com/feed/",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "Analytics Vidhya",
+      "url": "https://www.analyticsvidhya.com/blog",
+      "rss": "https://www.analyticsvidhya.com/feed/",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "AWS Big Data Blog",
+      "url": "https://aws.amazon.com/blogs/big-data",
+      "rss": "https://aws.amazon.com/blogs/big-data/feed/",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "Confluent Blog",
+      "url": "https://www.confluent.io/blog",
+      "rss": "https://www.confluent.io/blog/rss.xml",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "dbt Labs Blog",
+      "url": "https://www.getdbt.com/blog",
+      "rss": "https://www.getdbt.com/blog/feed",
+      "status": "Guessed RSS"
+    },
+    {
+      "name": "Databricks Blog",
+      "url": "https://www.databricks.com/blog",
+      "rss": "https://www.databricks.com/blog/feed.xml",
+      "status": "Guessed RSS"
+    },
+    {
+      "name": "Hevo Data Blog",
+      "url": "https://hevodata.com/blog",
+      "rss": "https://hevodata.com/blog/feed/",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "Dataiku Blog",
+      "url": "https://blog.dataiku.com",
+      "rss": "https://www.dataiku.com/stories/blog/rss.xml",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "Airflow Blog (Apache)",
+      "url": "https://airflow.apache.org/blog",
+      "rss": "https://airflow.apache.org/blog/index.xml",
+      "status": "Guessed RSS"
+    },
+    {
+      "name": "Fivetran Blog",
+      "url": "https://www.fivetran.com/blog",
+      "rss": "https://www.fivetran.com/blog/rss.xml",
+      "status": "Guessed RSS"
+    },
+    {
+      "name": "Stitch Fix Tech Blog",
+      "url": "https://multithreaded.stitchfix.com/blog",
+      "rss": "https://multithreaded.stitchfix.com/feed.xml",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "Smart Data Collective",
+      "url": "https://www.smartdatacollective.com",
+      "rss": "https://www.smartdatacollective.com/feed/",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "NYC Data Science Academy Blog",
+      "url": "https://nycdatascience.com/blog",
+      "rss": "https://nycdatascience.com/blog/blog-2/feed/",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "Becoming a Data Scientist",
+      "url": "https://www.becomingadatascientist.com/category/blog",
+      "rss": "https://www.becomingadatascientist.com/feed/",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "SAS Subconscious Musings",
+      "url": "https://blogs.sas.com/content/subconsciousmusings",
+      "rss": "https://blogs.sas.com/content/subconsciousmusings/feed",
+      "status": "Guessed RSS"
+    },
+    {
+      "name": "FlowingData",
+      "url": "https://flowingdata.com",
+      "rss": "https://flowingdata.com//flowingdata.com/feed",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "Andrew Gelman (Statistical Modeling)",
+      "url": "https://statmodeling.stat.columbia.edu",
+      "rss": "https://statmodeling.stat.columbia.edu/feed",
+      "status": "Guessed RSS"
+    },
+    {
+      "name": "Julia Silge Blog",
+      "url": "https://juliasilge.com/blog",
+      "rss": "https://juliasilge.com/blog/index.xml",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "Towards AI Blog",
+      "url": "https://towardsai.net/p",
+      "rss": "https://towardsai.net/feed",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "Freakonometrics",
+      "url": "https://freakonometrics.hypotheses.org",
+      "rss": "https://freakonometrics.hypotheses.org/feed",
+      "status": "Guessed RSS"
+    },
+    {
+      "name": "Machine Learning Mastery",
+      "url": "https://machinelearningmastery.com/blog",
+      "rss": "https://feeds.feedburner.com/MachineLearningMastery",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "Data Science 101",
+      "url": "https://101.datascience.community",
+      "rss": "https://ryanswanstrom.com/feed/",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "Occam's Razor",
+      "url": "https://www.kaushik.net/avinash",
+      "rss": "https://www.kaushik.net/avinash/feed/",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "Statistical Thinking",
+      "url": "https://www.fharrell.com",
+      "rss": "https://www.fharrell.com/index.xml",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "Data 36",
+      "url": "https://data36.com",
+      "rss": "https://data36.com/feed/",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "SSP.sh (Simon Späti)",
+      "url": "https://www.ssp.sh",
+      "rss": "https://www.ssp.sh/index.xml",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "DataExpert.io Newsletter",
+      "url": "https://blog.dataexpert.io",
+      "rss": "https://blog.dataexpert.io/feed",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "Practical Data Engineering",
+      "url": "https://www.pracdata.io",
+      "rss": "https://www.pracdata.io/feed",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "Data Engineering Central",
+      "url": "https://dataengineeringcentral.substack.com",
+      "rss": "https://dataengineeringcentral.substack.com/feed",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "Data Engineer Things",
+      "url": "https://dataengineerthings.substack.com",
+      "rss": "https://dataengineerthings.substack.com/feed",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "Data Engineering Community Digest",
+      "url": "https://dataengineeringcommunity.substack.com",
+      "rss": "https://dataengineeringcommunity.substack.com/feed",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "Confessions of a Data Guy",
+      "url": "https://www.confessionsofadataguy.com",
+      "rss": "https://www.confessionsofadataguy.com/feed/",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "SeattleDataGuy Newsletter",
+      "url": "https://seattledataguy.substack.com",
+      "rss": "https://seattledataguy.substack.com/feed",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "The Analytics Engineering Roundup",
+      "url": "https://roundup.getdbt.com",
+      "rss": "https://roundup.getdbt.com/feed",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "XenonStack Big Data Blog",
+      "url": "https://www.xenonstack.com/blog/tag/big-data-engineering",
+      "rss": "https://www.xenonstack.com/blog/rss.xml",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "Bernard Marr Blog",
+      "url": "https://bernardmarr.com/blog",
+      "rss": "https://bernardmarr.com/feed/",
+      "status": "Found Meta RSS"
+    },
+    {
+      "name": "Simo Ahava's Blog",
+      "url": "https://www.simoahava.com",
+      "rss": "https://www.simoahava.com/index.xml",
+      "status": "Guessed RSS"
+    },
+    {
+      "name": "What's The Big Data?",
+      "url": "https://whatsthebigdata.com",
+      "rss": "https://whatsthebigdata.com/feed.xml",
+      "status": "Guessed RSS"
+    }
+  ],
+  "not_found_list": [
+    {
+      "name": "insideBIGDATA",
+      "url": "https://insidebigdata.com",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "Towards Data Science",
+      "url": "https://towardsdatascience.com",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "DataCamp Blog",
+      "url": "https://www.datacamp.com/blog",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "Microsoft Azure Data Blog",
+      "url": "https://techcommunity.microsoft.com/category/azure/blog/microsoftdatablog",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "Data Science Central",
+      "url": "https://www.datasciencecentral.com",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "Cloudera Blog",
+      "url": "https://blog.cloudera.com",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "365 Data Science Blog",
+      "url": "https://365datascience.com/trending",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "Google Cloud Blog — Data & AI",
+      "url": "https://cloud.google.com/blog/products/data-analytics",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "Oracle AI & Data Science Blog",
+      "url": "https://blogs.oracle.com/ai-and-datascience",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "Datanami",
+      "url": "https://www.datanami.com",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "Kaggle Blog (No Free Hunch)",
+      "url": "https://blog.kaggle.com",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "Databricks Engineering Blog",
+      "url": "https://engineering.databricks.com",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "Snowflake Blog",
+      "url": "https://www.snowflake.com/blog",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "Uber Engineering Blog",
+      "url": "https://www.uber.com/en-US/blog/engineering",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "LinkedIn Engineering — Data",
+      "url": "https://engineering.linkedin.com/blog/topic/data",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "Airbnb Data Blog",
+      "url": "https://medium.com/airbnb-engineering/tagged/data",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "Simply Statistics",
+      "url": "https://simplystatistics.org",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "DataFloq",
+      "url": "https://datafloq.com/read",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "Data Science Association Blog",
+      "url": "http://www.datascienceassn.org/blog",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "Variance Explained",
+      "url": "https://varianceexplained.org",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "Chris Albon",
+      "url": "https://chrisalbon.com",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "Junk Charts",
+      "url": "https://junkcharts.typepad.com",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "FiveThirtyEight (now ABC)",
+      "url": "https://fivethirtyeight.com",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "O'Reilly Data Science Topics",
+      "url": "https://www.oreilly.com/radar/topics/data",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "IBM Data & AI Blog",
+      "url": "https://www.ibm.com/blog/data-and-ai",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "Womeninbigdata.org Blog",
+      "url": "https://www.womeninbigdata.org/blog",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "Planet Big Data",
+      "url": "https://planetbigdata.com",
+      "rss": null,
+      "status": "No RSS Found"
+    },
+    {
+      "name": "Netflix Tech Blog — Data",
+      "url": "https://netflixtechblog.com/tagged/data-engineering",
+      "rss": null,
+      "status": "No RSS Found"
+    }
+  ]
+}

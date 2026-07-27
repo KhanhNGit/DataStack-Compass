@@ -20,6 +20,10 @@ class FeatureExtraction(BaseModel):
 class ExtractedFeatures(BaseModel):
     features: list[FeatureExtraction]
 
+class BlogSummary(BaseModel):
+    summary_content: str
+    keywords_tags: list[str]
+
 class GeminiClient:
     def __init__(self):
         self.api_key = os.environ.get("GEMINI_API_KEY", "")
@@ -116,3 +120,46 @@ class GeminiClient:
         except Exception as e:
             logger.error(f"Failed to summarize via Gemini: {e}")
             return ""
+
+    def summarize_blog_post(self, content: str) -> dict:
+        if not self.client:
+            return {"summary_content": "No API Key provided. Cannot summarize.", "keywords_tags": []}
+            
+        safe_content = content[:100000] # Gemini Flash supports large context
+        word_count = len(safe_content.split())
+        
+        if word_count < 1000:
+            length_instruction = "Viết tóm tắt ngắn gọn khoảng 100 - 150 từ (tương đương 3-4 câu hoặc 1 đoạn ngắn + 2-3 bullet points)."
+        elif word_count < 3000:
+            length_instruction = "Viết tóm tắt chi tiết khoảng 200 - 300 từ (chia 2-3 ý chính, mỗi ý có giải thích kèm bullet points để không bỏ sót các thiết lập/luận điểm quan trọng)."
+        else:
+            length_instruction = "Viết tóm tắt tổng thể khoảng 400 - 500 từ (tập trung vào bức tranh tổng thể và kết quả, lọc bỏ các chi tiết mã nguồn rườm rà)."
+            
+        prompt = f"""
+Bạn là một chuyên gia phân tích dữ liệu và công nghệ (Data Engineering/Data Science). 
+Hãy đọc, hiểu và tóm tắt lại bài viết blog dưới đây một cách súc tích, phản ánh trọn vẹn và rõ ý nội dung xuyên suốt.
+
+NỘI DUNG BÀI VIẾT:
+{safe_content}
+
+YÊU CẦU ĐỊNH DẠNG:
+- summary_content: Một đoạn văn bản Markdown trình bày trôi chảy. Tùy thuộc vào loại bài viết (tutorial, chia sẻ kiến trúc, bản tin...), hãy tóm tắt linh hoạt sao cho người đọc nắm được: bài toán/bối cảnh, kiến trúc/giải pháp đề xuất, công nghệ sử dụng, các điểm triển khai kỹ thuật cần lưu ý, và kết quả/hiệu năng (nếu có). Trình bày kết hợp văn xuôi và danh sách (bullet points) sao cho tự nhiên nhất.
+- keywords_tags: Mảng các chuỗi hashtag liên quan đến công nghệ (ví dụ: #kafka) và lĩnh vực (ví dụ: #data-engineering, #lakehouse).
+
+YÊU CẦU ĐỘ DÀI:
+{length_instruction}
+"""
+        logger.info(f"Calling Gemini API to summarize blog post ({word_count} words)...")
+        try:
+            config = types.GenerateContentConfig(
+                response_mime_type="application/json",
+                response_schema=BlogSummary,
+                temperature=0.3
+            )
+            time.sleep(4)
+            response = self._generate_with_retry(prompt, config)
+            result = json.loads(response.text)
+            return result
+        except Exception as e:
+            logger.error(f"Failed to summarize blog via Gemini: {e}")
+            return {"summary_content": "", "keywords_tags": []}
