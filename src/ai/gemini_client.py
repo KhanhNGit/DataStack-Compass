@@ -86,9 +86,9 @@ class GeminiClient:
         Task:
         1. Classify ALL items in the release notes into exactly 4 groups. DO NOT MISS ANY ITEM. Follow these STRICT rules:
            - CVEs: Security vulnerabilities, CVEs, and security patches.
-           - Breaking Changes: Any backwards-incompatible changes, removals (e.g., dropping databases/columns), deprecations, or downgrade compatibility issues. (Example: Dropping a column family on downgrade MUST be a Breaking Change).
+           - Breaking Changes: Any backwards-incompatible changes, API removals, or deprecations that require user action to upgrade.
            - Bug Fixes: Error resolutions, memory leak fixes, crash preventions, and logic corrections.
-           - New Features: New capabilities, performance optimizations, refactoring, and documentation updates. (NOTE: All documentation updates MUST go here, NOT in Bug Fixes).
+           - New Features & Enhancements: New capabilities, performance optimizations, refactoring, new compatibility handling, and documentation updates. (NOTE: All documentation updates MUST go here, NOT in Bug Fixes).
         2. For each item, extract the `ticket_id` (e.g. KAFKA-14902) and `ticket_url`.
         3. Rewrite the content of each item (`title` and `description`) to be smooth, professional, and easy to understand for end-users, while preserving the core technical meaning.
         4. For Breaking Changes, you MUST classify the `change_type` as one of: REMOVED, REPLACED, DEPRECATED, or OTHER.
