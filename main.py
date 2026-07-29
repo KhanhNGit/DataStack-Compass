@@ -4,6 +4,7 @@ from src.pipelines import oss_release_pipeline
 from src.pipelines import ai_feature_pipeline
 from src.pipelines import tech_blog_pipeline
 from src.pipelines import email_notification_pipeline
+from src.pipelines import blog_email_pipeline
 
 def main():
     setup_logger()
@@ -29,6 +30,10 @@ def main():
     notify_parser = subparsers.add_parser("notify", help="Run Email Notification Pipeline")
     notify_parser.add_argument("--dry-run", action="store_true", help="Run in dry-run mode (render template only)")
 
+    # Command: blogs-notify
+    blogs_notify_parser = subparsers.add_parser("blogs-notify", help="Run Email Notification Pipeline for Tech Blogs")
+    blogs_notify_parser.add_argument("--dry-run", action="store_true", help="Run in dry-run mode (render template only)")
+
     args = parser.parse_args()
 
     if args.command == "run":
@@ -42,6 +47,8 @@ def main():
             run_parser.print_help()
     elif args.command == "notify":
         email_notification_pipeline.run(dry_run=args.dry_run)
+    elif args.command == "blogs-notify":
+        blog_email_pipeline.run(dry_run=args.dry_run)
     else:
         parser.print_help()
 

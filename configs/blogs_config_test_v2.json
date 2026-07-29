@@ -1,0 +1,23 @@
+[
+    {
+        "name": "Analytics Vidhya",
+        "url": "https://www.analyticsvidhya.com/blog",
+        "category": "platform",
+        "topics": "Data Science, ML, Big Data, Deep Learning, Python",
+        "max_days_back": 7,
+        "max_posts_per_run": 5,
+        "pull_all": false,
+        "crawl_type": "auto"
+    },
+    {
+        "name": "Kaggle Blog (No Free Hunch)",
+        "url": "https://blog.kaggle.com",
+        "rss_url": "https://medium.com/feed/kaggle-blog",
+        "category": "platform",
+        "topics": "ML Competitions, Datasets, Winner Interviews, Tutorials",
+        "max_days_back": 7,
+        "max_posts_per_run": 5,
+        "pull_all": false,
+        "crawl_type": "auto"
+    }
+]

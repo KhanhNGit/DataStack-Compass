@@ -36,6 +36,7 @@ class SummarizedRelease(BaseModel):
     new_features: list[ReleaseItem]
 
 class BlogSummary(BaseModel):
+    clean_title: str
     summary_content: str
     keywords_tags: list[str]
 
@@ -113,36 +114,54 @@ class GeminiClient:
             logger.error(f"Failed to summarize release via Gemini: {e}")
             return {}
 
-    def summarize_blog_post(self, content: str) -> dict:
+    def summarize_blog_post(self, title: str, content: str) -> dict:
         if not self.client:
-            return {"summary_content": "No API Key provided. Cannot summarize.", "keywords_tags": []}
+            return {"clean_title": title, "summary_content": "No API Key provided. Cannot summarize.", "keywords_tags": []}
             
         safe_content = content[:100000] # Gemini Flash supports large context
         word_count = len(safe_content.split())
         
+        # Công thức: Tóm tắt 15-20% bài gốc
+        min_words = max(100, int(word_count * 0.15))
+        max_words = max(120, int(word_count * 0.20))
+        
+        # Đặt ngưỡng chặn trên để không sinh ra bài tóm tắt quá dài (Max 600 từ)
+        if max_words > 600:
+            max_words = 600
+            min_words = 450
+            
+        target_percent = "15%-20%" if max_words < 600 else f"{int(min_words/word_count*100)}%-{int(max_words/word_count*100)}%"
+
+        length_instruction = f"Viết tóm tắt với độ dài chiếm khoảng {target_percent} văn bản gốc (ước tính khoảng {min_words} đến {max_words} từ, dựa trên bài gốc dài {word_count} từ)."
+        
         if word_count < 1000:
-            length_instruction = "Viết tóm tắt ngắn gọn khoảng 100 - 150 từ (tương đương 3-4 câu hoặc 1 đoạn ngắn + 2-3 bullet points)."
-        elif word_count < 3000:
-            length_instruction = "Viết tóm tắt chi tiết khoảng 200 - 300 từ (chia 2-3 ý chính, mỗi ý có giải thích kèm bullet points để không bỏ sót các thiết lập/luận điểm quan trọng)."
+            length_instruction += " Hãy trình bày thành 1 đoạn ngắn kết hợp vài bullet points."
         else:
-            length_instruction = "Viết tóm tắt tổng thể khoảng 400 - 500 từ (tập trung vào bức tranh tổng thể và kết quả, lọc bỏ các chi tiết mã nguồn rườm rà)."
+            length_instruction += " Hãy trình bày chia thành các ý chính, sử dụng bullet points để không bỏ sót các luận điểm kỹ thuật quan trọng."
             
         prompt = f"""
 Bạn là một chuyên gia phân tích dữ liệu và công nghệ (Data Engineering/Data Science). 
 Hãy đọc, hiểu và tóm tắt lại bài viết blog dưới đây một cách súc tích, phản ánh trọn vẹn và rõ ý nội dung xuyên suốt.
 
+TIÊU ĐỀ GỐC CÓ THỂ BỊ CẮT BỚT:
+{title}
+
 NỘI DUNG BÀI VIẾT:
 {safe_content}
 
-YÊU CẦU ĐỊNH DẠNG:
-- summary_content: Một đoạn văn bản Markdown trình bày trôi chảy. Tùy thuộc vào loại bài viết (tutorial, chia sẻ kiến trúc, bản tin...), hãy tóm tắt linh hoạt sao cho người đọc nắm được: bài toán/bối cảnh, kiến trúc/giải pháp đề xuất, công nghệ sử dụng, các điểm triển khai kỹ thuật cần lưu ý, và kết quả/hiệu năng (nếu có). Trình bày kết hợp văn xuôi và danh sách (bullet points) sao cho tự nhiên nhất.
-- keywords_tags: Mảng các chuỗi hashtag liên quan đến công nghệ (ví dụ: #kafka) và lĩnh vực (ví dụ: #data-engineering, #lakehouse).
+YÊU CẦU ĐỊNH DẠNG ĐẦU RA:
+- clean_title: Dựa vào Tiêu đề gốc và Nội dung bài viết (thường có thẻ <h1> hoặc <h3> chứa title đầy đủ), hãy khôi phục/rút trích lại tiêu đề bài viết đầy đủ. Nếu Tiêu đề gốc không bị cắt bớt (không có '…'), hãy giữ nguyên. CHÚ Ý: Chỉ sử dụng dấu nháy đơn chuẩn (ASCII: ') thay vì dấu nháy cong (’) để tránh lỗi font chữ.
+- summary_content: Trình bày nội dung dưới định dạng HTML thuần (chỉ sử dụng các thẻ <p>, <ul>, <li>, <strong>, <em>, <br>). TUYỆT ĐỐI KHÔNG sử dụng cú pháp Markdown (như **, ###, -). Tùy thuộc vào loại bài viết, hãy tóm tắt sao cho người đọc nắm được: bài toán/bối cảnh, kiến trúc/giải pháp, công nghệ, và kết quả. Trình bày kết hợp văn xuôi và danh sách (bullet points) sao cho tự nhiên nhất.
+- keywords_tags: Mảng các chuỗi hashtag liên quan đến công nghệ (ví dụ: #kafka) và lĩnh vực (ví dụ: #data-engineering, #lakehouse). BẮT BUỘC mọi tag đều phải bắt đầu bằng dấu #.
 
 GÓC NHÌN TRÌNH BÀY (QUAN TRỌNG):
 - TUYỆT ĐỐI KHÔNG dùng các cụm từ mở đầu như "Bài viết này...", "Tác giả chia sẻ...", "Blog này hướng dẫn...".
 - Viết tóm tắt dưới dạng truyền đạt trực tiếp kiến thức/nội dung. Người đọc summary phải có cảm giác họ đang đọc chính bài viết đó nhưng ở phiên bản cô đọng nhất. Bắt đầu thẳng vào vấn đề!
 
-YÊU CẦU ĐỘ DÀI:
+CRITICAL RULES:
+1. NGÔN NGỮ ĐẦU RA: Phần `summary_content` BẮT BUỘC phải viết 100% bằng TIẾNG VIỆT. Không tóm tắt bằng tiếng Anh (chỉ giữ lại các thuật ngữ kỹ thuật chuyên ngành bằng tiếng Anh).
+
+YÊU CẦU ĐỘ DÀI CHO PHẦN SUMMARY:
 {length_instruction}
 """
         logger.info(f"Calling Gemini API to summarize blog post ({word_count} words)...")
@@ -158,4 +177,4 @@ YÊU CẦU ĐỘ DÀI:
             return result
         except Exception as e:
             logger.error(f"Failed to summarize blog via Gemini: {e}")
-            return {"summary_content": "", "keywords_tags": []}
+            return {"clean_title": title, "summary_content": "", "keywords_tags": []}

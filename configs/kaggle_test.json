@@ -1,0 +1,3 @@
+[
+  { "name": "Kaggle Blog (No Free Hunch)", "url": "https://medium.com/kaggle-blog", "category": "company", "topics": "Machine Learning", "max_days_back": 3000, "max_posts_per_run": 5, "pull_all": false, "crawl_type": "auto" }
+]

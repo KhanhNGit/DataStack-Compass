@@ -3,6 +3,8 @@ import os
 import sqlite3
 import logging
 import re
+import requests
+from bs4 import BeautifulSoup
 from src.crawler.blogs.factory import BlogAdapterFactory
 from src.ai.gemini_client import GeminiClient
 from src.core.config_loader import load_env
@@ -96,6 +98,37 @@ def run_phase_1(config_path):
     
     logger.info(f"Phase 1 Complete. Fetched {new_count} new posts.")
 
+def fetch_real_title(url: str) -> str:
+    """Attempts to fetch the real title from the URL, using direct request or fallback proxy."""
+    try:
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()
+        html_content = response.text
+    except Exception as e:
+        logger.warning(f"Direct fetch failed for title of {url}: {e}. Trying via proxy...")
+        try:
+            import urllib.parse
+            proxy_url = f"https://corsproxy.io/?{urllib.parse.quote(url)}"
+            response = requests.get(proxy_url, timeout=15)
+            response.raise_for_status()
+            html_content = response.text
+        except Exception as proxy_e:
+            logger.error(f"Proxy fetch also failed for {url}: {proxy_e}")
+            return None
+
+    if html_content:
+        soup = BeautifulSoup(html_content, 'html.parser')
+        
+        og_title = soup.find('meta', property='og:title')
+        if og_title and og_title.get('content'):
+            return og_title['content'].strip()
+            
+        if soup.title and soup.title.string:
+            return soup.title.string.strip()
+            
+    return None
+
 def run_phase_2():
     logger.info("--- Starting Phase 2: Summarization ---")
     load_env()
@@ -104,7 +137,7 @@ def run_phase_2():
     conn = init_db()
     c = conn.cursor()
     
-    c.execute("SELECT url, raw_content, source_name FROM blogs WHERE status = 'RAW'")
+    c.execute("SELECT url, title, raw_content, source_name FROM blogs WHERE status = 'RAW'")
     rows = c.fetchall()
     
     if not rows:
@@ -117,18 +150,35 @@ def run_phase_2():
     updated_sources = set()
     
     for row in rows:
-        url, raw_content, source_name = row
+        url, title, raw_content, source_name = row
         logger.info(f"Summarizing: {url}")
+        
+        # Cào lại Title gốc nếu có dấu hiệu bị cắt
+        if title and ('…' in title or '...' in title):
+            logger.info(f"Title appears truncated: '{title}'. Attempting to fetch real title...")
+            real_title = fetch_real_title(url)
+            if real_title:
+                title = real_title
+                logger.info(f"Fetched real title: '{title}'")
+            else:
+                logger.warning("Could not fetch real title, falling back to original.")
+                
         try:
-            summary_dict = gemini.summarize_blog_post(raw_content)
+            summary_dict = gemini.summarize_blog_post(title, raw_content)
             summary_content = summary_dict.get('summary_content', '')
-            keywords_tags = json.dumps(summary_dict.get('keywords_tags', []))
+            
+            # Chuẩn hóa tags: Đảm bảo mọi tag đều bắt đầu bằng #
+            raw_tags = summary_dict.get('keywords_tags', [])
+            cleaned_tags = [t if t.startswith('#') else f"#{t}" for t in raw_tags]
+            keywords_tags = json.dumps(cleaned_tags)
+            
+            clean_title = summary_dict.get('clean_title', title)
             
             c.execute('''
                 UPDATE blogs 
-                SET summary_content = ?, keywords_tags = ?, status = 'SUMMARIZED'
+                SET title = ?, summary_content = ?, keywords_tags = ?, status = 'SUMMARIZED'
                 WHERE url = ?
-            ''', (summary_content, keywords_tags, url))
+            ''', (clean_title, summary_content, keywords_tags, url))
             conn.commit()
             updated_sources.add(source_name)
         except Exception as e:
