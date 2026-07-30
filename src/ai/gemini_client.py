@@ -91,11 +91,15 @@ class GeminiClient:
            - Bug Fixes: Error resolutions, memory leak fixes, crash preventions, and logic corrections.
            - New Features & Enhancements: New capabilities, performance optimizations, refactoring, new compatibility handling, and documentation updates. (NOTE: All documentation updates MUST go here, NOT in Bug Fixes).
         2. For each item, extract the `ticket_id` (e.g. KAFKA-14902) and `ticket_url`.
-        3. Rewrite the content of each item (`title` and `description`) to be smooth, professional, and easy to understand for end-users, while preserving the core technical meaning.
+        3. Rewrite the content of each item (`title` and `description`) to be smooth, professional, and easy to understand for end-users, while preserving the core technical meaning. Write this in Vietnamese (Tiếng Việt) following Rule 6.
         4. For Breaking Changes, you MUST classify the `change_type` as one of: REMOVED, REPLACED, DEPRECATED, or OTHER.
-        5. Create an `advisor_summary.overview` that provides an objective, narrative summary of the main focus of this release (e.g., "This release focuses on..."). DO NOT use imperative language like "Upgrade immediately".
-        6. CRITICAL LANGUAGE AND CONTEXT RULES:
-           - Output EVERYTHING entirely in English.
+        5. Create an `advisor_summary.overview` that provides an objective, narrative summary of the main focus of this release in Vietnamese (Tiếng Việt). DO NOT use imperative language like "Nâng cấp ngay lập tức" or "Upgrade immediately".
+        6. CRITICAL LANGUAGE AND TRANSLATION RULES:
+           - Output ALL content (titles, descriptions, overviews) in Vietnamese (Tiếng Việt).
+           - Flexible Translation for Technical Terms: 
+             + TRANSLATE common and widely understood technical terms into natural Vietnamese (e.g., "database" -> "cơ sở dữ liệu", "AI" -> "trí tuệ nhân tạo", "reinforcement learning" -> "học tăng cường").
+             + DO NOT TRANSLATE obscure, specialized, or highly context-specific technical terms that sound awkward, silly, or lose meaning in Vietnamese (e.g., "column families", "checkpointing", "write-ahead log", "WAL"). Keep them in their original English form.
+             + Ensure the mixture of Vietnamese and English vocabulary flows smoothly, reads naturally, and does not feel disjointed or awkward.
            - DO NOT compress or shorten the technical context. Ensure the rewritten descriptions remain fully detailed, comprehensive, and preserve all original technical nuances and configurations.
         """
         
